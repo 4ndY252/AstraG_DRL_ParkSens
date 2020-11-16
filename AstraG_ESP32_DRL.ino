@@ -8,6 +8,9 @@ CRGBArray<NUM_LEDS> ledsR;
 const char* ssid     = "ESP32-Access-Point";
 const char* password = "123456789";
 
+const int pin1 = 33;
+const int pin2 = 25;
+
 
 
 // Set web server port number to 80
@@ -44,7 +47,9 @@ void setup() {
   FastLED.addLeds<NEOPIXEL,13>(ledsL, NUM_LEDS);
   FastLED.addLeds<NEOPIXEL,14>(ledsR, NUM_LEDS);
   
-  
+  pinMode(pin1, INPUT);
+  pinMode(pin2, INPUT);
+
   WiFi.softAP(ssid, password);
 
   IPAddress IP = WiFi.softAPIP();
@@ -166,41 +171,59 @@ void illegal(){
   FastLED.delay(50);
   } 
 }
+int temp1 = 8;
+int temp2 = 0;
+void signal(){
+  int val1 = digitalRead(pin1);
+  int val2 = digitalRead(pin2);
+if(val1 == HIGH & val2 == HIGH){
+      ledsL[temp1].setRGB(255, 50, 0);
+      ledsR[temp2].setRGB(255, 50, 0);
+      temp1 = temp1 - 1;
+      temp2 = temp2 + 1;
+      FastLED.show();
+      FastLED.delay(50);
+      if (temp1 == 0)
+      {
+        temp1 = 8;
+        temp2 = 0;
+      }
 
-/*void signal(){
-if(analogRead(36) > 0){
-  for (int i = 0; i < 8; i++)
-  {
-    ledsL[i].setRGB(255, 50, 0);
-    FastLED.show();
-    delay(50);
-  }
-  fill_solid(&(ledsL[0]), 8, CRGB(0, 0, 0));
-  FastLED.show();
 }
-  if (analogRead(25) > 0){
+  else if (val2 == HIGH){
     for (int i = 0; i < 8; i++)
     {
       ledsR[i].setRGB(255, 50, 0);
     FastLED.show();
-    delay(50);
+    FastLED.delay(75);
     }
     fill_solid(&(ledsR[0]), 8, CRGB(0, 0, 0));
   FastLED.show();
    
+  } else if(val1 == HIGH){
+  for (int i = 8; i >= 0; i--)
+  {
+    ledsL[i].setRGB(255, 50, 0);
+    FastLED.show();
+    FastLED.delay(75);
   }
-  
-
-} */
+  fill_solid(&(ledsL[0]), 8, CRGB(0, 0, 0));
+  FastLED.show();
+  } else{
+    fill_solid(&(ledsL[0]), 8, CRGB(25, 25, 25));
+    fill_solid(&(ledsR[0]), 8, CRGB(25, 25, 25));
+    FastLED.show();
+  }
+}
 
 int modeRGB = 0;
 bool lightsOff = true;
 void taskLED(void * parameter){
   while (1)
   {
-    /* if(lightsOff){
+    if(lightsOff == true){
       signal();
-    } */
+    }
     switch(modeRGB){
       case 0:
       off();
