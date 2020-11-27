@@ -32,16 +32,16 @@ void setup() {
       NULL,  /* Task input parameter */
       2,  /* Priority of the task */
       NULL,
-      0);  /* Task handle. */
+      1);  /* Task handle. */
 
   xTaskCreatePinnedToCore(
       taskWifi, /* Function to implement the task */
       "taskWifi", /* Name of the task */
       10000,  /* Stack size in words */
       NULL,  /* Task input parameter */
-      1,  /* Priority of the task */
+      0,  /* Priority of the task */
       NULL,
-      1);  /* Task handle. */
+      0);  /* Task handle. */
       
       
   FastLED.addLeds<NEOPIXEL,13>(ledsL, NUM_LEDS);
@@ -67,13 +67,14 @@ void knightRider(){
         ledsL[i-2].setRGB(0, 0, 0);
       }      
     }
-    
+    FastLED.delay(1);
     FastLED.show();
     FastLED.delay(40);    
     
     
   }
   fill_solid(&(ledsL[0]), 8, CRGB::Black);
+  FastLED.delay(1);
   FastLED.show();
   //FastLED.showColor(CRGB::Black, 100);
   for (int i = 0; i <= NUM_LEDS; i++){
@@ -84,11 +85,13 @@ void knightRider(){
         ledsR[i-2].setRGB(0, 0, 0);
       }
     }
+    FastLED.delay(1);
     FastLED.show();
     FastLED.delay(40);
     if (i == NUM_LEDS){
       end = true;
       fill_solid(&(ledsL[0]), 8, CRGB::Black);
+      FastLED.delay(1);
       FastLED.show();
     }
   }
@@ -107,12 +110,13 @@ void knightRider(){
       }
       
     }
-    
+    FastLED.delay(1);
     FastLED.show();
     FastLED.delay(40);
     
   }
   fill_solid(&(ledsR[0]), 8, CRGB::Black);
+  FastLED.delay(1);
   FastLED.show();
   for (int i = NUM_LEDS; i >= 0; i--){
     ledsL[i].setRGB(255, 0, 0);
@@ -122,11 +126,13 @@ void knightRider(){
         ledsL[i+2].setRGB(0, 0, 0);
       }
     }
+    FastLED.delay(1);
     FastLED.show();
     FastLED.delay(40);
     if (i == 0){
       end = false;
       fill_solid(&(ledsL[0]), 8, CRGB::Black);
+      FastLED.delay(1);
       FastLED.show();
     }
   }
@@ -164,9 +170,11 @@ void illegal(){
   delay(10);
   for (int i = 0; i <= 2; i++){
   fill_solid(&(ledsR[0]), 8, CRGB::Red);
+  FastLED.delay(1);
   FastLED.show();
   FastLED.delay(50);
   fill_solid(&(ledsR[0]), 8, CRGB::Black);
+  FastLED.delay(1);
   FastLED.show();
   FastLED.delay(50);
   } 
@@ -181,6 +189,7 @@ if(val1 == HIGH & val2 == HIGH){
       ledsR[temp2].setRGB(255, 50, 0);
       temp1 = temp1 - 1;
       temp2 = temp2 + 1;
+      FastLED.delay(1);
       FastLED.show();
       FastLED.delay(50);
       if (temp1 == 0)
@@ -194,24 +203,29 @@ if(val1 == HIGH & val2 == HIGH){
     for (int i = 0; i < 8; i++)
     {
       ledsR[i].setRGB(255, 50, 0);
+      FastLED.delay(1);
     FastLED.show();
     FastLED.delay(75);
     }
     fill_solid(&(ledsR[0]), 8, CRGB(0, 0, 0));
+    FastLED.delay(1);
   FastLED.show();
    
   } else if(val1 == HIGH){
   for (int i = 8; i >= 0; i--)
   {
     ledsL[i].setRGB(255, 50, 0);
+    FastLED.delay(1);
     FastLED.show();
     FastLED.delay(75);
   }
   fill_solid(&(ledsL[0]), 8, CRGB(0, 0, 0));
+  FastLED.delay(1);
   FastLED.show();
-  } else{
+  } else if (val1 == LOW && val2 == LOW){
     fill_solid(&(ledsL[0]), 8, CRGB(25, 25, 25));
     fill_solid(&(ledsR[0]), 8, CRGB(25, 25, 25));
+    FastLED.delay(1);
     FastLED.show();
   }
 }
