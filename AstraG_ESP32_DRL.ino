@@ -22,7 +22,7 @@ void setup() {
       "taskLED",
       10000,
       NULL,
-      2,
+      0,
       NULL,
       1);
 
@@ -35,8 +35,8 @@ void setup() {
       NULL,
       0);
             
-  FastLED.addLeds<NEOPIXEL,13>(ledsL, NUM_LEDS);
-  FastLED.addLeds<NEOPIXEL,14>(ledsR, NUM_LEDS);
+  FastLED.addLeds<NEOPIXEL,13>(ledsL, NUM_LEDS).setCorrection(TypicalSMD5050);
+  FastLED.addLeds<NEOPIXEL,14>(ledsR, NUM_LEDS).setCorrection(TypicalSMD5050);
   
   pinMode(pin1, INPUT);
   pinMode(pin2, INPUT);
@@ -60,8 +60,7 @@ void knightRider(){
       if (i > 1){
         ledsL[i-2].setRGB(0, 0, 0);
       }      
-    }
-    
+    }    
     FastLED.show();
     FastLED.delay(40);
   }
@@ -75,8 +74,7 @@ void knightRider(){
       if(i > 1){
         ledsR[i-2].setRGB(0, 0, 0);
       }
-    }
-    
+    }    
     FastLED.show();
     FastLED.delay(40);
 
@@ -84,8 +82,8 @@ void knightRider(){
       end = true;
       fill_solid(&(ledsL[0]), 8, CRGB::Black);
       FastLED.show();
-    }
-  } 
+      }
+    } 
   } else if (end == true){
     for (int i = NUM_LEDS; i >= 0; i--){
     ledsR[i].setRGB(255, 0, 0);
@@ -94,8 +92,8 @@ void knightRider(){
       ledsR[i+1].setRGB(100, 0, 0);
       if (i < 7){
         ledsR[i+2].setRGB(0, 0, 0);
+        }
       }
-    }
     
     FastLED.show();
     FastLED.delay(40);
@@ -109,8 +107,8 @@ void knightRider(){
       ledsL[i+1].setRGB(100, 0, 0);
       if(i < 7){
         ledsL[i+2].setRGB(0, 0, 0);
-      }
-    }    
+        }
+      }    
     FastLED.show();
     FastLED.delay(40);
 
@@ -118,8 +116,8 @@ void knightRider(){
       end = false;
       fill_solid(&(ledsL[0]), 8, CRGB::Black);
       FastLED.show();
+      }
     }
-  }
   }
 }
 
@@ -131,9 +129,9 @@ void rainbow(){
     FastLED.show();
     if (rainbowHue >= 255){
       rainbowHue = 0;
-    } else{
+      } else{
       rainbowHue = rainbowHue + 20;
-    }
+      }
     delay(30);
 }
 
@@ -183,17 +181,31 @@ void signal(){
   int val1 = digitalRead(pin1);
   int val2 = digitalRead(pin2);
 
-if(val1 == HIGH & val2 == HIGH){
-      ledsL[temp1].setRGB(255, 50, 0);
+if(val1 == HIGH && val2 == HIGH){
+  for(int i = 8, j = 0; i >= 0 && j <= 8; i--, j++){
+    ledsR[j] = CRGB:: OrangeRed;
+    ledsL[i] = CRGB:: OrangeRed;    
+    FastLED.show();    
+    FastLED.delay(75);    
+  }
+  fill_solid(&(ledsR[0]), 8, CRGB(0, 0, 0));
+  fill_solid(&(ledsL[0]), 8, CRGB(0, 0, 0));
+  FastLED.show();
+
+
+   /* ledsL[temp1].setRGB(255, 50, 0);
       ledsR[temp2].setRGB(255, 50, 0);
       temp1 = temp1 - 1;
       temp2 = temp2 + 1;      
       FastLED.show();
       FastLED.delay(50);
-      if (temp1 == 0){
+      if (temp2 == 8){
         temp1 = 8;
         temp2 = 0;
       }
+  */
+  
+      
 } else if (val2 == HIGH){
     for (int i = 0; i < 8; i++){
       ledsR[i].setRGB(255, 50, 0);      
@@ -224,12 +236,12 @@ bool lightsOff = true;
 
 void taskLED(void * parameter){
   while (1){
-    if(lightsOff == true){
+   /*if(lightsOff == true){
       signal();
-    }
+    } */
     switch(modeRGB){
       case 0:
-      off();
+      signal();
       lightsOff = true;
       break;
       case 1:
