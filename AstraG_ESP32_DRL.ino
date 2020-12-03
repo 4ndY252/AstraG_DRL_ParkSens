@@ -13,8 +13,7 @@ const int pin2 = 25;
 
 WiFiServer server(80);
 
-String header;
-  
+String header;  
 
 void setup() {
  xTaskCreatePinnedToCore(
@@ -49,7 +48,6 @@ void setup() {
 }
 
 bool end = false;
-
 void knightRider(){  
 
   if(end == false){
@@ -125,7 +123,7 @@ int rainbowHue = 0;
 
 void rainbow(){    
     fill_rainbow(&(ledsL[0]), 8 , rainbowHue, 10);
-    fill_rainbow(&(ledsR[0]), 8 , rainbowHue+160, 10);
+    fill_rainbow(&(ledsR[0]), 8 , rainbowHue+100, 10);
     FastLED.show();
     if (rainbowHue >= 255){
       rainbowHue = 0;
@@ -153,7 +151,7 @@ void ambient(){
   FastLED.show();
 }
 
-void illegal(){
+void redBlueFlash(){
   for (int i = 0; i <= 2; i++){
   fill_solid(&(ledsL[0]), 8, CRGB::Blue);
   FastLED.show();
@@ -174,9 +172,6 @@ void illegal(){
   } 
 }
 
-int temp1 = 8;
-int temp2 = 0;
-
 void signal(){
   int val1 = digitalRead(pin1);
   int val2 = digitalRead(pin2);
@@ -190,21 +185,7 @@ if(val1 == HIGH && val2 == HIGH){
   }
   fill_solid(&(ledsR[0]), 8, CRGB(0, 0, 0));
   fill_solid(&(ledsL[0]), 8, CRGB(0, 0, 0));
-  FastLED.show();
-
-
-   /* ledsL[temp1].setRGB(255, 50, 0);
-      ledsR[temp2].setRGB(255, 50, 0);
-      temp1 = temp1 - 1;
-      temp2 = temp2 + 1;      
-      FastLED.show();
-      FastLED.delay(50);
-      if (temp2 == 8){
-        temp1 = 8;
-        temp2 = 0;
-      }
-  */
-  
+  FastLED.show(); 
       
 } else if (val2 == HIGH){
     for (int i = 0; i < 8; i++){
@@ -232,37 +213,27 @@ if(val1 == HIGH && val2 == HIGH){
 }
 
 int modeRGB = 0;
-bool lightsOff = true;
 
 void taskLED(void * parameter){
   while (1){
-   /*if(lightsOff == true){
-      signal();
-    } */
     switch(modeRGB){
       case 0:
-      signal();
-      lightsOff = true;
+      signal();  
       break;
       case 1:
       white();
-      lightsOff = false;
       break;
       case 2:
       knightRider();
-      lightsOff = false;
       break;
       case 3:
       ambient();
-      lightsOff = false;
       break;
       case 4:
-      illegal();
-      lightsOff = false;
+      redBlueFlash();
       break;
       case 5:
       rainbow();
-      lightsOff = false;
       break;
     }
   }
@@ -276,21 +247,17 @@ void loop(){
 }
 void taskWifi(void * TaskParameters_t){
   while(1){
-  WiFiClient client = server.available();   // Listen for incoming clients
+  WiFiClient client = server.available();
 
-  if (client) {                             // If a new client connects,
-    String currentLine = "";                // make a String to hold incoming data from the client
-    while (client.connected()) {            // loop while the client's connected
-      if (client.available()) {             // if there's bytes to read from the client,
-        char c = client.read();             // read a byte, then
-      //  Serial.write(c);                    // print it out the serial monitor
+  if (client) {                             
+    String currentLine = "";                
+    while (client.connected()) {
+      if (client.available()) {
+        char c = client.read();
+      //  Serial.write(c);
         header += c;
-        if (c == '\n') {                    // if the byte is a newline character
-          // if the current line is blank, you got two newline characters in a row.
-          // that's the end of the client HTTP request, so send a response:
+        if (c == '\n') {
           if (currentLine.length() == 0) {
-            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-            // and a content-type so the client knows what's coming, then a blank line:
             client.println("HTTP/1.1 200 OK");
             client.println("Content-type:text/html");
             client.println("Connection: close");
@@ -328,20 +295,16 @@ void taskWifi(void * TaskParameters_t){
             client.println("<p><a href=\"/5/\"><button class=\"button\">Rainbow</button></a></p>");
             
             client.println("</body></html>");
-            
-            // The HTTP response ends with another blank line
-            client.println();
-            
+            client.println();            
             break;
-          } else { // if you got a newline, then clear currentLine
+          } else {
             currentLine = "";
           }
-        } else if (c != '\r') {  // if you got anything else but a carriage return character,
-          currentLine += c;      // add it to the end of the currentLine
+        } else if (c != '\r') {
+          currentLine += c;
         }
       }
     }
-    // Clear the header variable
     header = "";    
     client.stop();    
   }
