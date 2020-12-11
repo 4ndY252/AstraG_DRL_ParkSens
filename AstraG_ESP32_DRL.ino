@@ -51,7 +51,7 @@ bool end = false;
 void knightRider(){  
 
   if(end == false){
-  for (int i = 0; i <= NUM_LEDS; i++){
+  for (int i = 0; i <= 7; i++){
     ledsL[i].setRGB(255, 0, 0);
     if (i > 0){
       ledsL[i-1].setRGB(100, 0, 0);
@@ -62,49 +62,48 @@ void knightRider(){
     FastLED.show();
     FastLED.delay(40);
   }
-  fill_solid(&(ledsL[0]), 8, CRGB::Black);  
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);  
   FastLED.show();
   
-  for (int i = 0; i <= NUM_LEDS; i++){
+  for (int i = 0; i <= NUM_LEDS-1; i++){
     ledsR[i].setRGB(255, 0, 0);
     if(i > 0){
       ledsR[i-1].setRGB(100, 0, 0);
       if(i > 1){
-        ledsR[i-2].setRGB(0, 0, 0);
+        ledsR[i-2] = CRGB:: Black;
       }
     }    
     FastLED.show();
     FastLED.delay(40);
 
-    if (i == NUM_LEDS){
+    if (i == 7){
       end = true;
-      fill_solid(&(ledsL[0]), 8, CRGB::Black);
+      fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
       FastLED.show();
       }
     } 
   } else if (end == true){
-    for (int i = NUM_LEDS; i >= 0; i--){
+    for (int i = NUM_LEDS-1; i >= 0; i--){
     ledsR[i].setRGB(255, 0, 0);
-
     if (i < 8){
       ledsR[i+1].setRGB(100, 0, 0);
       if (i < 7){
-        ledsR[i+2].setRGB(0, 0, 0);
+        ledsR[i+2] = CRGB:: Black;
         }
       }
     
     FastLED.show();
     FastLED.delay(40);
   }
-  fill_solid(&(ledsR[0]), 8, CRGB::Black);
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
   FastLED.show();
 
-  for (int i = NUM_LEDS; i >= 0; i--){
+  for (int i = NUM_LEDS-1; i >= 0; i--){
     ledsL[i].setRGB(255, 0, 0);
     if(i < 8){
       ledsL[i+1].setRGB(100, 0, 0);
       if(i < 7){
-        ledsL[i+2].setRGB(0, 0, 0);
+        ledsL[i+2] = CRGB:: Black;
         }
       }    
     FastLED.show();
@@ -112,7 +111,7 @@ void knightRider(){
 
     if (i == 0){
       end = false;
-      fill_solid(&(ledsL[0]), 8, CRGB::Black);
+      fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
       FastLED.show();
       }
     }
@@ -120,10 +119,9 @@ void knightRider(){
 }
 
 int rainbowHue = 0;
-
 void rainbow(){    
-    fill_rainbow(&(ledsL[0]), 8 , rainbowHue, 10);
-    fill_rainbow(&(ledsR[0]), 8 , rainbowHue+100, 10);
+    fill_rainbow(&(ledsL[0]), NUM_LEDS, rainbowHue, 10);
+    fill_rainbow(&(ledsR[0]), NUM_LEDS, rainbowHue+100, 10);
     FastLED.show();
     if (rainbowHue >= 255){
       rainbowHue = 0;
@@ -134,80 +132,80 @@ void rainbow(){
 }
 
 void white(){
-  fill_solid(&(ledsL[0]), 8, CRGB(25, 25, 25));
-  fill_solid(&(ledsR[0]), 8, CRGB(25, 25, 25));
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
   FastLED.show();
 }
 
 void off(){
-  fill_solid(&(ledsL[0]), 8, CRGB(0, 0, 0));
-  fill_solid(&(ledsR[0]), 8, CRGB(0, 0, 0));
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
 }
 
 void ambient(){
-  fill_solid(&(ledsL[0]), 8, CRGB(50, 15, 0));
-  fill_solid(&(ledsR[0]), 8, CRGB(50, 15, 0));
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: OrangeRed);
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: OrangeRed);
   FastLED.show();
 }
 
 void redBlueFlash(){
   for (int i = 0; i <= 2; i++){
-  fill_solid(&(ledsL[0]), 8, CRGB::Blue);
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Blue);
   FastLED.show();
   FastLED.delay(50);
-  fill_solid(&(ledsL[0]), 8, CRGB::Black);
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
   FastLED.show();
   FastLED.delay(50);
   }
 
   delay(10);
   for (int i = 0; i <= 2; i++){
-  fill_solid(&(ledsR[0]), 8, CRGB::Red);  
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Red);  
   FastLED.show();
   FastLED.delay(50);
-  fill_solid(&(ledsR[0]), 8, CRGB::Black);  
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);  
   FastLED.show();
   FastLED.delay(50);
   } 
 }
-/*****************************************************************************************************************/
+
 void signal(){
   int val1 = digitalRead(pin1);
   int val2 = digitalRead(pin2);
 
-if(val1 == HIGH && val2 == HIGH){ // having problems here
-  for(int i = 8, j = 0; i >= 0 && j <= 8; i--, j++){
+if(val1 == HIGH && val2 == HIGH){
+  for(int i = NUM_LEDS-1, j = 0; i >= 0 && j <= NUM_LEDS-1; i--, j++){
     ledsR[j] = CRGB:: OrangeRed;
     ledsL[i] = CRGB:: OrangeRed;    
     FastLED.show();    
     FastLED.delay(75);    
   }
-  fill_solid(&(ledsR[0]), 8, CRGB(0, 0, 0));
-  fill_solid(&(ledsL[0]), 8, CRGB(0, 0, 0));
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show(); 
       
 } else if (val2 == HIGH){
-    for (int i = 0; i < 8; i++){
-      ledsR[i].setRGB(255, 50, 0);      
+    for (int i = 0; i <= NUM_LEDS-1; i++){
+      ledsR[i] = CRGB:: OrangeRed;     
       FastLED.show();
       FastLED.delay(75);
       }
-    fill_solid(&(ledsR[0]), 8, CRGB(0, 0, 0));
+    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
    
   } else if(val1 == HIGH){
-  for (int i = 8; i >= 0; i--)  {
-    ledsL[i].setRGB(255, 50, 0);
+  for (int i = NUM_LEDS-1; i >= 0; i--){
+    ledsL[i] = CRGB:: OrangeRed;
     FastLED.show();
     FastLED.delay(75);
   }
-  fill_solid(&(ledsL[0]), 8, CRGB(0, 0, 0));
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
 
   } else if (val1 == LOW && val2 == LOW){
-    fill_solid(&(ledsL[0]), 8, CRGB(25, 25, 25));
-    fill_solid(&(ledsR[0]), 8, CRGB(25, 25, 25));
+    fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
+    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
     FastLED.show();
   }
 }
