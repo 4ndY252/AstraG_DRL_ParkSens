@@ -45,11 +45,101 @@ void setup() {
   IPAddress IP = WiFi.softAPIP();
   
  server.begin();
+ }
+
+void startUp(){
+  FastLED.setBrightness(0);
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::White); 
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::White);
+  for (int i = 0; i <= 255; i = i+5)
+  {
+    FastLED.setBrightness(i);
+    FastLED.show();
+    delay(50);
+  }
+}
+
+void signal(){
+  int val1 = digitalRead(pin1);
+  int val2 = digitalRead(pin2);
+
+if(val1 == HIGH && val2 == HIGH){
+  for(int i = NUM_LEDS-1, j = 0; i >= 0 && j <= NUM_LEDS-1; i--, j++){
+    ledsR[j] = CRGB:: OrangeRed;
+    ledsL[i] = CRGB:: OrangeRed;    
+    FastLED.show();    
+    FastLED.delay(75);    
+  }
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show(); 
+      
+} else if (val2 == HIGH){
+    for (int i = 0; i <= NUM_LEDS-1; i++){
+      ledsR[i] = CRGB:: OrangeRed;     
+      FastLED.show();
+      FastLED.delay(75);
+      }
+    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
+   
+  } else if(val1 == HIGH){
+  for (int i = NUM_LEDS-1; i >= 0; i--){
+    ledsL[i] = CRGB:: OrangeRed;
+    FastLED.show();
+    FastLED.delay(75);
+  }
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
+
+  } else if (val1 == LOW && val2 == LOW){
+    fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
+    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
+    FastLED.show();
+  }
+}
+
+void off(){
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
+}
+
+void white(){
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
+  FastLED.show();
+}
+
+void red(){
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Red);
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Red);
+  FastLED.show();
+}
+
+void green(){
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Green);
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Green);
+  FastLED.show();
+}
+
+void blue(){
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Blue);
+  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Blue);
+  FastLED.show();
+}
+
+void flash(){
+  FastLED.setBrightness(0);
+  FastLED.show();
+  delay(50);
+  FastLED.setBrightness(255);
+  FastLED.show();
+  delay(50);
 }
 
 bool end = false;
-void knightRider(){  
-
+void knightRider(){
   if(end == false){
   for (int i = 0; i <= 7; i++){
     ledsL[i].setRGB(255, 0, 0);
@@ -97,7 +187,6 @@ void knightRider(){
   }
   fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
   FastLED.show();
-
   for (int i = NUM_LEDS-1; i >= 0; i--){
     ledsL[i].setRGB(255, 0, 0);
     if(i < 8){
@@ -116,31 +205,6 @@ void knightRider(){
       }
     }
   }
-}
-
-int rainbowHue = 0;
-void rainbow(){    
-    fill_rainbow(&(ledsL[0]), NUM_LEDS, rainbowHue, 10);
-    fill_rainbow(&(ledsR[0]), NUM_LEDS, rainbowHue+100, 10);
-    FastLED.show();
-    if (rainbowHue >= 255){
-      rainbowHue = 0;
-      } else{
-      rainbowHue = rainbowHue + 20;
-      }
-    delay(30);
-}
-
-void white(){
-  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
-  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
-  FastLED.show();
-}
-
-void off(){
-  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
-  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
-  FastLED.show();
 }
 
 void ambient(){
@@ -170,51 +234,26 @@ void redBlueFlash(){
   } 
 }
 
-void signal(){
-  int val1 = digitalRead(pin1);
-  int val2 = digitalRead(pin2);
-
-if(val1 == HIGH && val2 == HIGH){
-  for(int i = NUM_LEDS-1, j = 0; i >= 0 && j <= NUM_LEDS-1; i--, j++){
-    ledsR[j] = CRGB:: OrangeRed;
-    ledsL[i] = CRGB:: OrangeRed;    
-    FastLED.show();    
-    FastLED.delay(75);    
-  }
-  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
-  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
-  FastLED.show(); 
-      
-} else if (val2 == HIGH){
-    for (int i = 0; i <= NUM_LEDS-1; i++){
-      ledsR[i] = CRGB:: OrangeRed;     
-      FastLED.show();
-      FastLED.delay(75);
+int rainbowHue = 0;
+void rainbow(){    
+    fill_rainbow(&(ledsL[0]), NUM_LEDS, rainbowHue, 10);
+    fill_rainbow(&(ledsR[0]), NUM_LEDS, rainbowHue+100, 10);
+    FastLED.show();
+    if (rainbowHue >= 255){
+      rainbowHue = 0;
+      } else{
+      rainbowHue = rainbowHue + 20;
       }
-    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
-  FastLED.show();
-   
-  } else if(val1 == HIGH){
-  for (int i = NUM_LEDS-1; i >= 0; i--){
-    ledsL[i] = CRGB:: OrangeRed;
-    FastLED.show();
-    FastLED.delay(75);
-  }
-  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
-  FastLED.show();
-
-  } else if (val1 == LOW && val2 == LOW){
-    fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
-    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
-    FastLED.show();
-  }
+    delay(30);
 }
 
-int modeRGB = 0;
-
+int modeRGB = -1;
 void taskLED(void * parameter){
   while (1){
     switch(modeRGB){
+      case -1:
+      startUp();
+      modeRGB = 0;
       case 0:
       signal();  
       break;
@@ -222,15 +261,27 @@ void taskLED(void * parameter){
       white();
       break;
       case 2:
-      knightRider();
+      red();
       break;
       case 3:
-      ambient();
+      green();
       break;
       case 4:
-      redBlueFlash();
+      blue();
       break;
       case 5:
+      flash();
+      break;
+      case 6:
+      knightRider();
+      break;
+      case 7:
+      ambient();
+      break;
+      case 8:
+      redBlueFlash();
+      break;
+      case 9:
       rainbow();
       break;
     }
@@ -273,6 +324,14 @@ void taskWifi(void * TaskParameters_t){
               modeRGB = 4;
             } else if (header.indexOf("GET /5/") >=0) {
               modeRGB = 5;
+            } else if (header.indexOf("GET /6/") >=0) {
+              modeRGB = 6;
+            } else if (header.indexOf("GET /7/") >=0) {
+              modeRGB = 7;
+            } else if (header.indexOf("GET /8/") >=0) {
+              modeRGB = 8;
+            } else if (header.indexOf("GET /9/") >=0) {
+              modeRGB = 9;
             }
             
             client.println("<!DOCTYPE html><html>");
@@ -287,10 +346,14 @@ void taskWifi(void * TaskParameters_t){
                       
             client.println("<p><a href=\"/0/\"><button class=\"button\">OFF</button></a></p>");
             client.println("<p><a href=\"/1/\"><button class=\"button\">White Only</button></a></p>");
-            client.println("<p><a href=\"/2/\"><button class=\"button\">Knight Rider</button></a></p>");
-            client.println("<p><a href=\"/3/\"><button class=\"button\">Ambient</button></a></p>");
-            client.println("<p><a href=\"/4/\"><button class=\"button\">158</button></a></p>");
-            client.println("<p><a href=\"/5/\"><button class=\"button\">Rainbow</button></a></p>");
+            client.println("<p><a href=\"/2/\"><button class=\"button\">Red Only</button></a></p>");
+            client.println("<p><a href=\"/3/\"><button class=\"button\">Green Only</button></a></p>");
+            client.println("<p><a href=\"/4/\"><button class=\"button\">Blue Only</button></a></p>");
+            client.println("<p><a href=\"/5/\"><button class=\"button\">Flashing</button></a></p>");
+            client.println("<p><a href=\"/6/\"><button class=\"button\">Knight Rider</button></a></p>");
+            client.println("<p><a href=\"/7/\"><button class=\"button\">Ambient</button></a></p>");
+            client.println("<p><a href=\"/8/\"><button class=\"button\">158</button></a></p>");
+            client.println("<p><a href=\"/9/\"><button class=\"button\">Rainbow</button></a></p>");
             
             client.println("</body></html>");
             client.println();            
@@ -305,6 +368,6 @@ void taskWifi(void * TaskParameters_t){
     }
     header = "";    
     client.stop();    
+    }
   }
-}
 }
