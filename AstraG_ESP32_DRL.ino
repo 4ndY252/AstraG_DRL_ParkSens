@@ -138,6 +138,19 @@ void flash(){
   delay(50);
 }
 
+void pulse(){
+  for(int i = 255; i >= 0; i = i-5){
+    FastLED.setBrightness(i);
+    FastLED.show();
+    delay(25);
+  }
+  for(int i = 0; i <= 255; i = i+5){
+    FastLED.setBrightness(i);
+    FastLED.show();
+    delay(25);
+  }
+}
+
 bool end = false;
 void knightRider(){
   if(end == false){
@@ -273,15 +286,18 @@ void taskLED(void * parameter){
       flash();
       break;
       case 6:
-      knightRider();
+      pulse();
       break;
       case 7:
-      ambient();
+      knightRider();
       break;
       case 8:
-      redBlueFlash();
+      ambient();
       break;
       case 9:
+      redBlueFlash();
+      break;
+      case 10:
       rainbow();
       break;
     }
@@ -332,6 +348,8 @@ void taskWifi(void * TaskParameters_t){
               modeRGB = 8;
             } else if (header.indexOf("GET /9/") >=0) {
               modeRGB = 9;
+            } else if (header.indexOf("GET /10/") >=0) {
+              modeRGB = 10;
             }
             
             client.println("<!DOCTYPE html><html>");
@@ -350,10 +368,11 @@ void taskWifi(void * TaskParameters_t){
             client.println("<p><a href=\"/3/\"><button class=\"button\">Green Only</button></a></p>");
             client.println("<p><a href=\"/4/\"><button class=\"button\">Blue Only</button></a></p>");
             client.println("<p><a href=\"/5/\"><button class=\"button\">Flashing</button></a></p>");
-            client.println("<p><a href=\"/6/\"><button class=\"button\">Knight Rider</button></a></p>");
-            client.println("<p><a href=\"/7/\"><button class=\"button\">Ambient</button></a></p>");
-            client.println("<p><a href=\"/8/\"><button class=\"button\">158</button></a></p>");
-            client.println("<p><a href=\"/9/\"><button class=\"button\">Rainbow</button></a></p>");
+            client.println("<p><a href=\"/6/\"><button class=\"button\">Pulse</button></a></p>");
+            client.println("<p><a href=\"/7/\"><button class=\"button\">Knight Rider</button></a></p>");
+            client.println("<p><a href=\"/8/\"><button class=\"button\">Ambient</button></a></p>");
+            client.println("<p><a href=\"/9/\"><button class=\"button\">158</button></a></p>");
+            client.println("<p><a href=\"/10/\"><button class=\"button\">Rainbow</button></a></p>");
             
             client.println("</body></html>");
             client.println();            
