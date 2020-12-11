@@ -171,12 +171,12 @@ void redBlueFlash(){
   FastLED.delay(50);
   } 
 }
-
+/*****************************************************************************************************************/
 void signal(){
   int val1 = digitalRead(pin1);
   int val2 = digitalRead(pin2);
 
-if(val1 == HIGH && val2 == HIGH){
+if(val1 == HIGH && val2 == HIGH){ // having problems here
   for(int i = 8, j = 0; i >= 0 && j <= 8; i--, j++){
     ledsR[j] = CRGB:: OrangeRed;
     ledsL[i] = CRGB:: OrangeRed;    
