@@ -154,7 +154,7 @@ void pulse(){
 bool end = false;
 void knightRider(){
   if(end == false){
-  for (int i = 0; i <= 7; i++){
+  for (int i = 0; i <= NUM_LEDS-1; i++){
     ledsL[i].setRGB(255, 0, 0);
     if (i > 0){
       ledsL[i-1].setRGB(100, 0, 0);
@@ -179,7 +179,7 @@ void knightRider(){
     FastLED.show();
     FastLED.delay(40);
 
-    if (i == 7){
+    if (i == NUM_LEDS-1){
       end = true;
       fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
       FastLED.show();
@@ -188,9 +188,9 @@ void knightRider(){
   } else if (end == true){
     for (int i = NUM_LEDS-1; i >= 0; i--){
     ledsR[i].setRGB(255, 0, 0);
-    if (i < 8){
+    if (i < NUM_LEDS){
       ledsR[i+1].setRGB(100, 0, 0);
-      if (i < 7){
+      if (i < NUM_LEDS-1){
         ledsR[i+2] = CRGB:: Black;
         }
       }
@@ -202,9 +202,9 @@ void knightRider(){
   FastLED.show();
   for (int i = NUM_LEDS-1; i >= 0; i--){
     ledsL[i].setRGB(255, 0, 0);
-    if(i < 8){
+    if(i < NUM_LEDS){
       ledsL[i+1].setRGB(100, 0, 0);
-      if(i < 7){
+      if(i < NUM_LEDS-1){
         ledsL[i+2] = CRGB:: Black;
         }
       }    
@@ -250,14 +250,14 @@ void redBlueFlash(){
 int rainbowHue = 0;
 void rainbow(){    
     fill_rainbow(&(ledsL[0]), NUM_LEDS, rainbowHue, 10);
-    fill_rainbow(&(ledsR[0]), NUM_LEDS, rainbowHue+100, 10);
+    fill_rainbow(&(ledsR[0]), NUM_LEDS, rainbowHue+127, 10);
     FastLED.show();
     if (rainbowHue >= 255){
       rainbowHue = 0;
       } else{
       rainbowHue = rainbowHue + 20;
       }
-    delay(30);
+    delay(25);
 }
 
 int modeRGB = -1;
