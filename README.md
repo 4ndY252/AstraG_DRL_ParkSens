@@ -1,5 +1,5 @@
-# AstraG_ESP32_DRL
-Dynamic turn signals + daytime running lights with custom animations - ESP32
+# AstraG_DRL_ParkSens
+Dynamic turn signals and daytime running lights with custom animations - ESP32
 
 Parking sensor and accelerometer outputting info to an OLED display - Arduino Nano
 
