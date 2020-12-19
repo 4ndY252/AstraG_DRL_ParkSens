@@ -358,9 +358,11 @@ void taskWifi(void * TaskParameters_t){
             client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
             client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
             client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
+            client.println("body {background-color: #303030;}");
+            client.println("h1 {color: white;}");
             client.println(".button2 {background-color: #555555;}</style></head>");
             
-            client.println("<body><h1>ESP32 Web Server</h1>");            
+            client.println("<body style><h1>ESP32 Web Server</h1>");            
                       
             client.println("<p><a href=\"/0/\"><button class=\"button\">OFF</button></a></p>");
             client.println("<p><a href=\"/1/\"><button class=\"button\">White Only</button></a></p>");
