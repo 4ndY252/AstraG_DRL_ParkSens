@@ -68,29 +68,32 @@ if(val1 == HIGH && val2 == HIGH){
     ledsR[j] = CRGB:: OrangeRed;
     ledsL[i] = CRGB:: OrangeRed;    
     FastLED.show();    
-    FastLED.delay(75);    
+    FastLED.delay(50);   
   }
   fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
-  FastLED.show(); 
+  FastLED.show();
+  FastLED.delay(333);
       
 } else if (val2 == HIGH){
     for (int i = 0; i <= NUM_LEDS-1; i++){
       ledsR[i] = CRGB:: OrangeRed;     
       FastLED.show();
-      FastLED.delay(75);
+      FastLED.delay(50);
       }
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
+  FastLED.delay(333);
    
   } else if(val1 == HIGH){
   for (int i = NUM_LEDS-1; i >= 0; i--){
     ledsL[i] = CRGB:: OrangeRed;
     FastLED.show();
-    FastLED.delay(75);
+    FastLED.delay(50);
   }
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
+  FastLED.delay(333);
 
   } else if (val1 == LOW && val2 == LOW){
     fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
@@ -267,6 +270,7 @@ void taskLED(void * parameter){
       case -1:
       startUp();
       modeRGB = 0;
+      break;
       case 0:
       signal();  
       break;
