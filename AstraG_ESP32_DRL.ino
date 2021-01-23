@@ -12,11 +12,15 @@ const int pin1 = 25;
 const int pin2 = 33;
 
 WiFiServer server(80);
-
 String header;  
 
+unsigned long previousMillis = 0;
+const long interval1 = 39.5;
+const long interval2 = 321;
+
+
 void setup() {
-  pinMode(pin1, INPUT_PULLDOWN);
+  pinMode(pin1, INPUT_PULLDOWN); // musi byt PULLDOWN, pretoze napatie nikdy nie je presne 0V alebo 3.3V -> nechcene spustanie animacie
   pinMode(pin2, INPUT_PULLDOWN);
  xTaskCreatePinnedToCore( // definicia kde ma co bezat - LED animacie jadro 2, WiFi 1
       taskLED, 
@@ -43,7 +47,6 @@ void setup() {
  // pinMode(pin2, INPUT);
 
   WiFi.softAP(ssid, password);
-
   IPAddress IP = WiFi.softAPIP();
   
  server.begin();
@@ -60,22 +63,30 @@ void startUp(){ // postupne rozsvietenie pri zapnuti
     delay(50);
   }
 }
-
+// while high = smerovka inak pockaj 321ms+ kym znova zasvieti na bielo
 void signal(){ // animacia smeroviek
   int val1 = digitalRead(pin1);
   int val2 = digitalRead(pin2);
+  unsigned long currentMillis = millis();
 
 if(val1 == HIGH && val2 == HIGH){ // vystrazne
   for(int i = NUM_LEDS-1, j = 0; i >= 0 && j <= NUM_LEDS-1; i--, j++){
+    if(currentMillis - previousMillis >= interval1){
+      previousMillis = currentMillis;
     ledsR[j] = CRGB(255, 50, 0);
     ledsL[i] = CRGB(255, 50, 0);    
     FastLED.show();    
-    FastLED.delay(39.5);   
+    //FastLED.delay(39.5);   
   }
+  }
+  if(currentMillis - previousMillis >= interval2){
+      previousMillis = currentMillis;
   fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
-  FastLED.delay(321);
+  //FastLED.delay(321);
+    }
+  
       
 } else if (val2 == HIGH){
     for (int i = 0; i <= NUM_LEDS-1; i++){
