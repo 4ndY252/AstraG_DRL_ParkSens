@@ -8,17 +8,15 @@ CRGBArray<NUM_LEDS> ledsR;
 const char* ssid     = "ESP32-Access-Point";
 const char* password = "123456789";
 
-const int pin1 = 25;
-const int pin2 = 33;
+const int pin1 = 33;
+const int pin2 = 25;
 
 WiFiServer server(80);
 
 String header;  
 
 void setup() {
-  pinMode(pin1, INPUT_PULLDOWN);
-  pinMode(pin2, INPUT_PULLDOWN);
- xTaskCreatePinnedToCore( // definicia kde ma co bezat - LED animacie jadro 2, WiFi 1
+ xTaskCreatePinnedToCore(
       taskLED, 
       "taskLED",
       10000,
@@ -36,11 +34,11 @@ void setup() {
       NULL,
       0);
             
-  FastLED.addLeds<NEOPIXEL,14>(ledsL, NUM_LEDS).setCorrection(TypicalSMD5050); // korekcia farieb, bez toho svietia LEDky modrym odtienom
-  FastLED.addLeds<NEOPIXEL,13>(ledsR, NUM_LEDS).setCorrection(TypicalSMD5050);
+  FastLED.addLeds<NEOPIXEL,13>(ledsL, NUM_LEDS).setCorrection(TypicalSMD5050);
+  FastLED.addLeds<NEOPIXEL,14>(ledsR, NUM_LEDS).setCorrection(TypicalSMD5050);
   
- // pinMode(pin1, INPUT); // vstupne piny na digitalRead (smerovky)
- // pinMode(pin2, INPUT);
+  pinMode(pin1, INPUT);
+  pinMode(pin2, INPUT);
 
   WiFi.softAP(ssid, password);
 
@@ -49,7 +47,7 @@ void setup() {
  server.begin();
  }
 
-void startUp(){ // postupne rozsvietenie pri zapnuti
+void startUp(){
   FastLED.setBrightness(0);
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::White); 
   fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::White);
@@ -61,59 +59,56 @@ void startUp(){ // postupne rozsvietenie pri zapnuti
   }
 }
 
-void signal(){ // animacia smeroviek
+void signal(){
   int val1 = digitalRead(pin1);
   int val2 = digitalRead(pin2);
 
-if(val1 == HIGH && val2 == HIGH){ // vystrazne
+if(val1 == HIGH && val2 == HIGH){
   for(int i = NUM_LEDS-1, j = 0; i >= 0 && j <= NUM_LEDS-1; i--, j++){
-    ledsR[j] = CRGB(255, 50, 0);
-    ledsL[i] = CRGB(255, 50, 0);    
+    ledsR[j] = CRGB:: OrangeRed;
+    ledsL[i] = CRGB:: OrangeRed;    
     FastLED.show();    
-    FastLED.delay(39.5);   
+    FastLED.delay(50);   
   }
   fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
-  FastLED.delay(321);
+  FastLED.delay(333);
       
 } else if (val2 == HIGH){
     for (int i = 0; i <= NUM_LEDS-1; i++){
-      ledsR[i] = CRGB(255, 50, 0);     
+      ledsR[i] = CRGB:: OrangeRed;     
       FastLED.show();
-      FastLED.delay(39.5);
+      FastLED.delay(50);
       }
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
-  FastLED.delay(321);
+  FastLED.delay(333);
    
   } else if(val1 == HIGH){
   for (int i = NUM_LEDS-1; i >= 0; i--){
-    ledsL[i] = CRGB(255, 50, 0);
+    ledsL[i] = CRGB:: OrangeRed;
     FastLED.show();
-    FastLED.delay(39.5);
+    FastLED.delay(50);
   }
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
-  FastLED.delay(321);
+  FastLED.delay(333);
 
   } else if (val1 == LOW && val2 == LOW){
-    delay(25);
-    if(val1 == LOW && val2 == LOW){
-      fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
+    fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
     FastLED.show();
-    }    
   }
 }
 
-void off(){ // manualne vypnutie
+void off(){
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
 }
 
-void white(){ // iba biela farba v pripade chyby
+void white(){
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
   fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
   FastLED.show();
@@ -137,7 +132,7 @@ void blue(){
   FastLED.show();
 }
 
-void flash(){ // funguje pri hociakej farbe, ovladanie iba jasu
+void flash(){
   FastLED.setBrightness(0);
   FastLED.show();
   delay(50);
@@ -309,11 +304,6 @@ void taskLED(void * parameter){
       case 10:
       rainbow();
       break;
-      case 11:
-      fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
-      fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
-      FastLED.show();
-      break;
     }
   }
   vTaskDelete( NULL );
@@ -364,8 +354,6 @@ void taskWifi(void * TaskParameters_t){
               modeRGB = 9;
             } else if (header.indexOf("GET /10/") >=0) {
               modeRGB = 10;
-            } else if (header.indexOf("GET /11/") >=0) {
-              modeRGB = 11;
             }
             
             client.println("<!DOCTYPE html><html>");
@@ -391,7 +379,6 @@ void taskWifi(void * TaskParameters_t){
             client.println("<p><a href=\"/8/\"><button class=\"button\">Ambient</button></a></p>");
             client.println("<p><a href=\"/9/\"><button class=\"button\">158</button></a></p>");
             client.println("<p><a href=\"/10/\"><button class=\"button\">Rainbow</button></a></p>");
-            client.println("<p><a href=\"/11/\"><button class=\"button\">OFF</button></a></p>");
             
             client.println("</body></html>");
             client.println();            
