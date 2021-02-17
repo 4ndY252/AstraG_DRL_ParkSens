@@ -8,16 +8,16 @@ CRGBArray<NUM_LEDS> ledsR;
 const char* ssid     = "ESP32-Access-Point";
 const char* password = "123456789";
 
-const int pin1 = 25;
-const int pin2 = 33;
+const int pinLeft = 25;
+const int pinRight = 33;
 
 WiFiServer server(80);
 String header;  
 
 
 void setup() {
-  pinMode(pin1, INPUT_PULLDOWN); // musi byt PULLDOWN, pretoze napatie nikdy nie je presne 0V alebo 3.3V -> nechcene spustanie animacie
-  pinMode(pin2, INPUT_PULLDOWN);
+  pinMode(pinLeft, INPUT_PULLDOWN); // musi byt PULLDOWN, pretoze napatie nikdy nie je presne 0V alebo 3.3V -> nechcene spustanie animacie
+  pinMode(pinRight, INPUT_PULLDOWN);
  xTaskCreatePinnedToCore( // definicia kde ma co bezat - LED animacie jadro 2, WiFi 1
       taskLED, 
       "taskLED",
@@ -39,8 +39,8 @@ void setup() {
   FastLED.addLeds<NEOPIXEL,14>(ledsL, NUM_LEDS).setCorrection(TypicalSMD5050); // korekcia farieb, bez toho svietia LEDky modrym odtienom
   FastLED.addLeds<NEOPIXEL,13>(ledsR, NUM_LEDS).setCorrection(TypicalSMD5050);
   
- // pinMode(pin1, INPUT); // vstupne piny na digitalRead (smerovky)
- // pinMode(pin2, INPUT);
+ // pinMode(pinLeft, INPUT); // vstupne piny na digitalRead (smerovky)
+ // pinMode(pinRight, INPUT);
 
   WiFi.softAP(ssid, password);
   IPAddress IP = WiFi.softAPIP();
@@ -60,16 +60,16 @@ void startUp(){ // postupne rozsvietenie pri zapnuti
   }
 }
 void signal(){ // animacia smeroviek
-  int val1 = digitalRead(pin1);
-  int val2 = digitalRead(pin2);
+  int turnLeft = digitalRead(pinLeft);
+  int turnRight = digitalRead(pinRight);
   unsigned long currentMillis = millis();
 
-if(val1 == HIGH && val2 == HIGH){ // vystrazne
+if(turnLeft == HIGH && turnRight == HIGH){ // vystrazne
   for(int i = NUM_LEDS-1, j = 0; i >= 0 && j <= NUM_LEDS-1; i--, j++){
     ledsR[j] = CRGB(255, 50, 0);
     ledsL[i] = CRGB(255, 50, 0);    
     FastLED.show();
-    if(digitalRead(pin1) == LOW){
+    if(digitalRead(pinLeft) == LOW && digitalRead(pinRight == LOW)){
       break;
     }
     FastLED.delay(39.5);   
@@ -80,11 +80,11 @@ if(val1 == HIGH && val2 == HIGH){ // vystrazne
   FastLED.show();
   FastLED.delay(321);
           
-} else if (val2 == HIGH){
+} else if (turnRight == HIGH){
     for (int i = 0; i <= NUM_LEDS-1; i++){
       ledsR[i] = CRGB(255, 50, 0);     
       FastLED.show();
-      if(digitalRead(pin1) == LOW){
+      if(digitalRead(pinRight) == LOW){
       break;
     }
       FastLED.delay(39.5);
@@ -93,11 +93,11 @@ if(val1 == HIGH && val2 == HIGH){ // vystrazne
   FastLED.show();
   FastLED.delay(321);
    
-  } else if(val1 == HIGH){
+  } else if(turnLeft == HIGH){
   for (int i = NUM_LEDS-1; i >= 0; i--){
     ledsL[i] = CRGB(255, 50, 0);
     FastLED.show();
-    if(digitalRead(pin1) == LOW){
+    if(digitalRead(pinLeft) == LOW){
       break;
     }
     FastLED.delay(39.5);
@@ -106,9 +106,9 @@ if(val1 == HIGH && val2 == HIGH){ // vystrazne
   FastLED.show();
   FastLED.delay(321);
 
-  } else if (val1 == LOW && val2 == LOW){
+  } else if (turnLeft == LOW && turnRight == LOW){
     delay(25);
-    if(val1 == LOW && val2 == LOW){
+    if(turnLeft == LOW && turnRight == LOW){
       fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
       fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
     FastLED.show();
