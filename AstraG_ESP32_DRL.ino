@@ -13,7 +13,8 @@ const int pinRight = 33;
 
 WiFiServer server(80);
 String header;  
-
+long previousMillis = 0;
+long interval = 321;
 
 void setup() {
   pinMode(pinLeft, INPUT_PULLDOWN); // musi byt PULLDOWN, pretoze napatie nikdy nie je presne 0V alebo 3.3V -> nechcene spustanie animacie
@@ -74,11 +75,16 @@ if(turnLeft == HIGH && turnRight == HIGH){ // vystrazne
     }
     FastLED.delay(39.5);   
     }
-  
-  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+  if(currentMillis - previousMillis >= interval){
+    previousMillis = currentMillis;
+    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
-  FastLED.delay(321);
+  }
+  /*fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
+  FastLED.delay(321);*/
           
 } else if (turnRight == HIGH){
     for (int i = 0; i <= NUM_LEDS-1; i++){
@@ -89,9 +95,14 @@ if(turnLeft == HIGH && turnRight == HIGH){ // vystrazne
     }
       FastLED.delay(39.5);
       }
+      if(currentMillis - previousMillis >= interval){
+    previousMillis = currentMillis;
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
-  FastLED.delay(321);
+  }
+    /*fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
+  FastLED.delay(321);*/
    
   } else if(turnLeft == HIGH){
   for (int i = NUM_LEDS-1; i >= 0; i--){
@@ -102,9 +113,14 @@ if(turnLeft == HIGH && turnRight == HIGH){ // vystrazne
     }
     FastLED.delay(39.5);
   }
+  if(currentMillis - previousMillis >= interval){
+    previousMillis = currentMillis;
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
-  FastLED.delay(321);
+  }
+  /*fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
+  FastLED.delay(321);*/
 
   } else if (turnLeft == LOW && turnRight == LOW){
     delay(25);
@@ -330,7 +346,7 @@ void loop(){
 void taskWifi(void * TaskParameters_t){
   while(1){
   WiFiClient client = server.available();
-
+  unsigned long currentMillis = millis();
   if (client) {                             
     String currentLine = "";                
     while (client.connected()) {
