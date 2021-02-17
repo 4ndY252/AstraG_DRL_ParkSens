@@ -59,7 +59,7 @@ void startUp(){ // postupne rozsvietenie pri zapnuti
     delay(50);
   }
 }
-void signal(){ // animacia smeroviek
+void signal(){ // animacia smeroviek, TO DO: switch namiesto if
   int turnLeft = digitalRead(pinLeft);
   int turnRight = digitalRead(pinRight);
   unsigned long currentMillis = millis();
