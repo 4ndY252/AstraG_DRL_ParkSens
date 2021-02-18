@@ -5,8 +5,8 @@ CRGBArray<NUM_LEDS> ledsR;
 
 #include <WiFi.h>
 
-const char* ssid     = "ESP32-Access-Point";
-const char* password = "123456789";
+const char* ssid     = "ESP32";
+const char* password = "258058Ab";
 
 const int pinLeft = 25;
 const int pinRight = 33;
@@ -75,10 +75,14 @@ if(turnLeft == HIGH && turnRight == HIGH){ // vystrazne
     }
     FastLED.delay(39.5);   
     }
-  if(currentMillis - previousMillis >= interval){
-    previousMillis = currentMillis;
+    //sem pojde cma a do millis pojde svetlo
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
+  if(currentMillis - previousMillis >= interval){
+    previousMillis = currentMillis;
+    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
+    fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
   FastLED.show();
   }
   /*fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
@@ -95,9 +99,11 @@ if(turnLeft == HIGH && turnRight == HIGH){ // vystrazne
     }
       FastLED.delay(39.5);
       }
+fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+FastLED.show();
       if(currentMillis - previousMillis >= interval){
     previousMillis = currentMillis;
-    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
   FastLED.show();
   }
     /*fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
@@ -113,9 +119,11 @@ if(turnLeft == HIGH && turnRight == HIGH){ // vystrazne
     }
     FastLED.delay(39.5);
   }
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
   if(currentMillis - previousMillis >= interval){
     previousMillis = currentMillis;
-  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
   FastLED.show();
   }
   /*fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
@@ -388,7 +396,7 @@ void taskWifi(void * TaskParameters_t){
             }
             
             client.println("<!DOCTYPE html><html>");
-            client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" charset=iso-8859-2>");
             client.println("<link rel=\"icon\" href=\"data:,\">");
             client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
             client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
