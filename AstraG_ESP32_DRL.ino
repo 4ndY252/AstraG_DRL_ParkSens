@@ -8,20 +8,17 @@ CRGBArray<NUM_LEDS> ledsR;
 const char* ssid     = "ESP32-Access-Point";
 const char* password = "123456789";
 
-const int pin1 = 25;
-const int pin2 = 33;
+const int pinLeft = 25;
+const int pinRight = 33;
 
 WiFiServer server(80);
 String header;  
-
-unsigned long previousMillis = 0;
-const long interval1 = 39.5;
-const long interval2 = 321;
-
+long previousMillis = 0;
+long interval = 321;
 
 void setup() {
-  pinMode(pin1, INPUT_PULLDOWN); // musi byt PULLDOWN, pretoze napatie nikdy nie je presne 0V alebo 3.3V -> nechcene spustanie animacie
-  pinMode(pin2, INPUT_PULLDOWN);
+  pinMode(pinLeft, INPUT_PULLDOWN); // musi byt PULLDOWN, pretoze napatie nikdy nie je presne 0V alebo 3.3V -> nechcene spustanie animacie
+  pinMode(pinRight, INPUT_PULLDOWN);
  xTaskCreatePinnedToCore( // definicia kde ma co bezat - LED animacie jadro 2, WiFi 1
       taskLED, 
       "taskLED",
@@ -43,8 +40,8 @@ void setup() {
   FastLED.addLeds<NEOPIXEL,14>(ledsL, NUM_LEDS).setCorrection(TypicalSMD5050); // korekcia farieb, bez toho svietia LEDky modrym odtienom
   FastLED.addLeds<NEOPIXEL,13>(ledsR, NUM_LEDS).setCorrection(TypicalSMD5050);
   
- // pinMode(pin1, INPUT); // vstupne piny na digitalRead (smerovky)
- // pinMode(pin2, INPUT);
+ // pinMode(pinLeft, INPUT); // vstupne piny na digitalRead (smerovky)
+ // pinMode(pinRight, INPUT);
 
   WiFi.softAP(ssid, password);
   IPAddress IP = WiFi.softAPIP();
@@ -63,65 +60,76 @@ void startUp(){ // postupne rozsvietenie pri zapnuti
     delay(50);
   }
 }
-// while high = smerovka inak pockaj 321ms+ kym znova zasvieti na bielo
-void signal(){ // animacia smeroviek
-  int val1 = digitalRead(pin1);
-  int val2 = digitalRead(pin2);
+void signal(){ // animacia smeroviek, TO DO: switch namiesto if
+  int turnLeft = digitalRead(pinLeft);
+  int turnRight = digitalRead(pinRight);
   unsigned long currentMillis = millis();
 
-if(val1 == HIGH && val2 == HIGH){ // vystrazne
+if(turnLeft == HIGH && turnRight == HIGH){ // vystrazne
   for(int i = NUM_LEDS-1, j = 0; i >= 0 && j <= NUM_LEDS-1; i--, j++){
-    if(currentMillis - previousMillis >= interval1){
-      previousMillis = currentMillis;
     ledsR[j] = CRGB(255, 50, 0);
     ledsL[i] = CRGB(255, 50, 0);    
-    FastLED.show();    
-    //FastLED.delay(39.5);   
-  }
-  }
-  if(currentMillis - previousMillis >= interval2){
-      previousMillis = currentMillis;
-  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+    FastLED.show();
+    if(digitalRead(pinLeft) == LOW && digitalRead(pinRight == LOW)){
+      break;
+    }
+    FastLED.delay(39.5);   
+    }
+  if(currentMillis - previousMillis >= interval){
+    previousMillis = currentMillis;
+    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
-  //FastLED.delay(321);
-    }
-  
-      
-} else if (val2 == HIGH){
+  }
+  /*fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
+  FastLED.delay(321);*/
+          
+} else if (turnRight == HIGH){
     for (int i = 0; i <= NUM_LEDS-1; i++){
       ledsR[i] = CRGB(255, 50, 0);     
       FastLED.show();
+      if(digitalRead(pinRight) == LOW){
+      break;
+    }
       FastLED.delay(39.5);
       }
+      if(currentMillis - previousMillis >= interval){
+    previousMillis = currentMillis;
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
-  FastLED.delay(321);
+  }
+    /*fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
+  FastLED.delay(321);*/
    
-  } else if(val1 == HIGH){
+  } else if(turnLeft == HIGH){
   for (int i = NUM_LEDS-1; i >= 0; i--){
     ledsL[i] = CRGB(255, 50, 0);
     FastLED.show();
+    if(digitalRead(pinLeft) == LOW){
+      break;
+    }
     FastLED.delay(39.5);
   }
+  if(currentMillis - previousMillis >= interval){
+    previousMillis = currentMillis;
   fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
   FastLED.show();
-  FastLED.delay(321);
+  }
+  /*fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
+  FastLED.show();
+  FastLED.delay(321);*/
 
-  } else if (val1 == LOW && val2 == LOW){
+  } else if (turnLeft == LOW && turnRight == LOW){
     delay(25);
-    if(val1 == LOW && val2 == LOW){
+    if(turnLeft == LOW && turnRight == LOW){
       fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: White);
-    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
+      fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: White);
     FastLED.show();
     }    
   }
-}
-
-void off(){ // manualne vypnutie
-  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
-  fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
-  FastLED.show();
 }
 
 void white(){ // iba biela farba v pripade chyby
@@ -338,7 +346,7 @@ void loop(){
 void taskWifi(void * TaskParameters_t){
   while(1){
   WiFiClient client = server.available();
-
+  unsigned long currentMillis = millis();
   if (client) {                             
     String currentLine = "";                
     while (client.connected()) {
@@ -391,18 +399,18 @@ void taskWifi(void * TaskParameters_t){
             
             client.println("<body style><h1>ESP32 Web Server</h1>");            
                       
-            client.println("<p><a href=\"/0/\"><button class=\"button\">OFF</button></a></p>");
-            client.println("<p><a href=\"/1/\"><button class=\"button\">White Only</button></a></p>");
-            client.println("<p><a href=\"/2/\"><button class=\"button\">Red Only</button></a></p>");
-            client.println("<p><a href=\"/3/\"><button class=\"button\">Green Only</button></a></p>");
-            client.println("<p><a href=\"/4/\"><button class=\"button\">Blue Only</button></a></p>");
-            client.println("<p><a href=\"/5/\"><button class=\"button\">Flashing</button></a></p>");
-            client.println("<p><a href=\"/6/\"><button class=\"button\">Pulse</button></a></p>");
+            client.println("<p><a href=\"/0/\"><button class=\"button\">Smerovky</button></a></p>");
+            client.println("<p><a href=\"/1/\"><button class=\"button\">Biela</button></a></p>");
+            client.println("<p><a href=\"/2/\"><button class=\"button\">Červená</button></a></p>");
+            client.println("<p><a href=\"/3/\"><button class=\"button\">Zelená</button></a></p>");
+            client.println("<p><a href=\"/4/\"><button class=\"button\">Modrá</button></a></p>");
+            client.println("<p><a href=\"/5/\"><button class=\"button\">Blikanie</button></a></p>");
+            client.println("<p><a href=\"/6/\"><button class=\"button\">Dýchanie</button></a></p>");
             client.println("<p><a href=\"/7/\"><button class=\"button\">Knight Rider</button></a></p>");
             client.println("<p><a href=\"/8/\"><button class=\"button\">Ambient</button></a></p>");
             client.println("<p><a href=\"/9/\"><button class=\"button\">158</button></a></p>");
-            client.println("<p><a href=\"/10/\"><button class=\"button\">Rainbow</button></a></p>");
-            client.println("<p><a href=\"/11/\"><button class=\"button\">OFF</button></a></p>");
+            client.println("<p><a href=\"/10/\"><button class=\"button\">Dúha</button></a></p>");
+            client.println("<p><a href=\"/11/\"><button class=\"button\">VYPNÚŤ</button></a></p>");
             
             client.println("</body></html>");
             client.println();            
