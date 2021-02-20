@@ -13,8 +13,7 @@ const int pinRight = 33;
 
 WiFiServer server(80);
 String header;
-long previousMillis = 0;
-long interval = 321;
+int turnSpeed = 39.5; //rychlost animacie smerovky - musi byt synchronizovana so smerovkou na aute
 
 void setup()
 {
@@ -66,7 +65,6 @@ void signal()
 { // animacia smeroviek, TO DO: switch namiesto if
   int turnLeft = digitalRead(pinLeft);
   int turnRight = digitalRead(pinRight);
-  unsigned long currentMillis = millis();
 
   if (turnLeft == HIGH && turnRight == HIGH)
   { // vystrazne
@@ -79,25 +77,21 @@ void signal()
       {
         break;
       }
-      FastLED.delay(39.5);
+      FastLED.delay(turnSpeed);
     }
 
-    //sem pojde cma a do millis pojde svetlo
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
     fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
-    delay(321);
-    /*if (currentMillis - previousMillis >= interval)
+    for (int i = 0; i <= 330; i++)
     {
-      previousMillis = currentMillis;
-      fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::White);
-      fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::White);
-      FastLED.show();
-    }*/
-    /*fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
-  fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
-  FastLED.show();
-  FastLED.delay(321);*/
+      delay(1);
+      i++;
+      if (digitalRead(pinLeft) == HIGH || digitalRead(pinRight) == HIGH) //ked sa opacna smerovka zapne, loop sa prerusi
+      {
+        break;
+      }
+    }
   }
   else if (turnRight == HIGH)
   {
@@ -109,30 +103,19 @@ void signal()
       {
         break;
       }
-      FastLED.delay(39.5);
+      FastLED.delay(turnSpeed);
     }
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
-    for (int i = 0; i <= 320; i++)
+    for (int i = 0; i <= 330; i++)
     {
       delay(1);
       i++;
-      if (digitalRead(pinLeft) == HIGH) //ked sa opacna smerovka zapne, loop sa prerusi
+      if (digitalRead(pinLeft) == HIGH || digitalRead(pinRight) == HIGH) //ked sa opacna smerovka zapne, loop sa prerusi
       {
         break;
       }
     }
-    /*fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
-    FastLED.show();
-    if (currentMillis - previousMillis >= interval)
-    {
-      previousMillis = currentMillis;
-      fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::White);
-      FastLED.show();
-    } /*
-    /*fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
-  FastLED.show();
-  FastLED.delay(321);*/
   }
   else if (turnLeft == HIGH)
   {
@@ -140,7 +123,7 @@ void signal()
     {
       ledsL[i] = CRGB(255, 50, 0);
       FastLED.show();
-      FastLED.delay(39.5);
+      FastLED.delay(turnSpeed);
       if (digitalRead(pinLeft) == LOW)
       {
         break;
@@ -148,24 +131,15 @@ void signal()
     }
     fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
-    for (int i = 0; i <= 320; i++)
+    for (int i = 0; i <= 330; i++)
     {
       delay(1);
       i++;
-      if (digitalRead(pinRight) == HIGH) //ked sa opacna smerovka zapne, loop sa prerusi
+      if (digitalRead(pinRight) == HIGH || digitalRead(pinLeft) == HIGH) //ked sa opacna smerovka zapne, loop sa prerusi
       {
         break;
       }
     }
-    /*if (currentMillis - previousMillis >= interval)
-    {
-      previousMillis = currentMillis;
-      fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::White);
-      FastLED.show();
-    }*/
-    /*fill_solid(&(ledsL[0]), NUM_LEDS, CRGB:: Black);
-  FastLED.show();
-  FastLED.delay(321);*/
   }
   else if (turnLeft == LOW && turnRight == LOW)
   {
@@ -434,7 +408,6 @@ void taskWifi(void *TaskParameters_t)
   while (1)
   {
     WiFiClient client = server.available();
-    //unsigned long currentMillis = millis();
     if (client)
     {
       String currentLine = "";
