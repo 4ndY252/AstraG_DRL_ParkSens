@@ -3,10 +3,10 @@ Dynamic turn signals and daytime running lights with custom animations - ESP32
 
 Parking sensor and accelerometer outputting info to an OLED display - Arduino Nano
 
-Warning: I'm an amateur, not a senior developer.
+Warning: I'm an amateur, not a senior developer - code may be (and most likely is) trash.
 
 TO DO:
-- synchronise turn signals
+- make it universal - only animation speed change needed (hopefully)
 - add comments
 - code cleanup
-- pray that everything is gonna work
+
