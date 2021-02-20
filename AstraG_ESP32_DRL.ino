@@ -13,7 +13,8 @@ const int pinRight = 33;
 
 WiFiServer server(80);
 String header;
-int turnSpeed = 39.5; //rychlost animacie smerovky - musi byt synchronizovana so smerovkou na aute
+int turnSpeed = 34.5; //rychlost animacie smerovky - musi byt synchronizovana so smerovkou na aute
+int turnFreeze = 5;
 
 void setup()
 {
@@ -83,6 +84,7 @@ void signal()
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
     fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
+    FastLED.delay(turnFreeze);
     for (int i = 0; i <= 330; i++)
     {
       delay(1);
@@ -107,6 +109,7 @@ void signal()
     }
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
+    FastLED.delay(turnFreeze);
     for (int i = 0; i <= 330; i++)
     {
       delay(1);
@@ -131,6 +134,7 @@ void signal()
     }
     fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
+    FastLED.delay(turnFreeze);
     for (int i = 0; i <= 330; i++)
     {
       delay(1);
@@ -143,13 +147,13 @@ void signal()
   }
   else if (turnLeft == LOW && turnRight == LOW)
   {
-    delay(25);
-    if (turnLeft == LOW && turnRight == LOW)
-    {
+    //delay(25);
+    //if (turnLeft == LOW && turnRight == LOW)
+    //{
       fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::White);
       fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::White);
       FastLED.show();
-    }
+    //}
   }
 }
 
