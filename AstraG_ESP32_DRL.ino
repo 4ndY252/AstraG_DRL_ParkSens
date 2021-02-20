@@ -141,6 +141,10 @@ void signal()
       ledsL[i] = CRGB(255, 50, 0);
       FastLED.show();
       FastLED.delay(39.5);
+      if (digitalRead(pinLeft) == LOW)
+      {
+        break;
+      }
     }
     fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
