@@ -81,7 +81,7 @@ void signal()
       }
       FastLED.delay(39.5);
     }
-    
+
     //sem pojde cma a do millis pojde svetlo
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
     fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
@@ -111,16 +111,16 @@ void signal()
       }
       FastLED.delay(39.5);
     }
-    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB:: Black);
+    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
-    for(int i = 0; i <= 320; i++){
+    for (int i = 0; i <= 320; i++)
+    {
       delay(1);
       i++;
-      if (digitalRead(pinLeft) ==  HIGH) //ked sa opacna smerovka zapne, loop sa prerusi
+      if (digitalRead(pinLeft) == HIGH) //ked sa opacna smerovka zapne, loop sa prerusi
       {
         break;
       }
-      
     }
     /*fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
@@ -148,14 +148,15 @@ void signal()
     }
     fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
-     for(int i = 0; i <= 320; i++){
+    for (int i = 0; i <= 320; i++)
+    {
       delay(1);
       i++;
-      if (digitalRead(pinRight) ==  HIGH) //ked sa opacna smerovka zapne, loop sa prerusi
+      if (digitalRead(pinRight) == HIGH) //ked sa opacna smerovka zapne, loop sa prerusi
       {
         break;
       }
-     }
+    }
     /*if (currentMillis - previousMillis >= interval)
     {
       previousMillis = currentMillis;
