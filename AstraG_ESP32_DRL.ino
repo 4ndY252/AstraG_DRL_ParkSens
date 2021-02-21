@@ -41,9 +41,6 @@ void setup()
   FastLED.addLeds<NEOPIXEL, 14>(ledsL, NUM_LEDS).setCorrection(TypicalSMD5050); // korekcia farieb, bez toho svietia LEDky modrym odtienom
   FastLED.addLeds<NEOPIXEL, 13>(ledsR, NUM_LEDS).setCorrection(TypicalSMD5050);
 
-  // pinMode(pinLeft, INPUT); // vstupne piny na digitalRead (smerovky)
-  // pinMode(pinRight, INPUT);
-
   WiFi.softAP(ssid, password);
   IPAddress IP = WiFi.softAPIP();
 
@@ -84,7 +81,7 @@ void signal()
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
     fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
-    FastLED.delay(turnFreeze);
+    delay(turnFreeze);
     for (int i = 0; i <= 330; i++)
     {
       delay(1);
@@ -97,6 +94,8 @@ void signal()
   }
   else if (turnRight == HIGH)
   {
+    fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::White);
+    FastLED.show();
     for (int i = 0; i <= NUM_LEDS - 1; i++)
     {
       ledsR[i] = CRGB(255, 50, 0);
@@ -109,7 +108,7 @@ void signal()
     }
     fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
-    FastLED.delay(turnFreeze);
+    delay(turnFreeze);
     for (int i = 0; i <= 330; i++)
     {
       delay(1);
@@ -122,6 +121,8 @@ void signal()
   }
   else if (turnLeft == HIGH)
   {
+    fill_solid(&(ledsR[0]), NUM_LEDS, CRGB::White);
+    FastLED.show();
     for (int i = NUM_LEDS - 1; i >= 0; i--)
     {
       ledsL[i] = CRGB(255, 50, 0);
@@ -134,7 +135,7 @@ void signal()
     }
     fill_solid(&(ledsL[0]), NUM_LEDS, CRGB::Black);
     FastLED.show();
-    FastLED.delay(turnFreeze);
+    delay(turnFreeze);
     for (int i = 0; i <= 330; i++)
     {
       delay(1);
