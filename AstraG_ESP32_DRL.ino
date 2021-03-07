@@ -13,8 +13,8 @@ const int pinRight = 33;
 
 WiFiServer server(80);
 String header;
-int turnSpeed = 34.5; //rychlost animacie smerovky - musi byt synchronizovana so smerovkou na aute
-int turnFreeze = 5;
+int turnSpeed = 35.5; //rychlost animacie smerovky - musi byt synchronizovana so smerovkou na aute
+int turnFreeze = 35.5;
 
 void setup()
 {
